@@ -8,7 +8,7 @@ import { ColorType, Color } from "../types/color"
 
 import { WebMidi } from "webmidi";
 import DeviceConfigs from "./devices";
-import { dev } from "$app/env";
+import { dev } from "$app/environment";
 
 export class GridController {
     id: number;
@@ -330,7 +330,7 @@ export class GridController {
             dimension: this.activeConfig.dimension,
             grid_dimension: this.activeConfig.gridDimension,
             grid_offset: this.activeConfig.gridOffset,
-            chain_key: this.activeConfig.chainKey,
+            layer_key: this.activeConfig.layerKey,
         }
     }
 

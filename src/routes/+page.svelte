@@ -16,17 +16,19 @@
     import Popup from "../components/Popup.svelte";
     import Dropdown from "../components/Dropdown.svelte";
     import Sidebar from "../components/Sidebar.svelte";
-    import CircularLoader from "../components/CircularLoader.svelte";
     import Multibutton from "../components/Multibutton.svelte";
     import Switch from "../components/Switch.svelte";
     import MobileSidebarButton from "../components/MobileSidebarButton.svelte";
-    import MobileSidebar from "../components/MobileSidebar.svelte";
+    import LayerSelector from "../components/LayerSelector.svelte";
+
     import ResizeObserver from "svelte-resize-observer";
 
     import {SvelteToast, toast} from "@zerodevx/svelte-toast";
     import {t, locale, locales} from "$lib/translations";
 
-    import {browser} from "$app/env";
+    import {browser} from "$app/environment";
+
+    import { GoogleAnalytics } from '@beyonk/svelte-google-analytics'
 
     import {afterUpdate, onMount} from "svelte";
     import "../shared.css";
@@ -79,7 +81,7 @@
 
 
     let engine: ProjectRT;
-    let project_status: string = "not loaded";
+    let projectStatus: string = "not loaded";
 
     let virtualDevices: any[] = []; //Should be fine
     let virtualDevicesInfo: DeviceInfoCanvas[] = [];
@@ -211,6 +213,79 @@
         }
     };
 
+    const onKeyDown = (e: KeyboardEvent) => {
+        if(e.repeat) return;
+
+        var keyCode = e.keyCode;
+        if(keyCode > 47 && keyCode < 58) // 0-9
+        {
+            var layer = keyCode == 48 ? 9 : keyCode - 49;
+            engine?.LayerChange(layer);
+            return
+        }
+        
+        switch(keyCode) {
+            case 32: // Space
+            case 80: // P
+                engine?.demoplay?.status === "PLAYING" ? engine?.demoplay?.Pause() : engine?.demoplay?.Start();
+                break;
+            case 37: // Left - Previous Action
+            case 65: // A
+                engine?.demoplay?.Pause();
+                engine?.demoplay?.Previous();
+                break;
+            case 39: // Right - Next Action
+            case 68: // D
+                engine?.demoplay?.Pause();
+                engine?.demoplay?.Next();
+                break;
+            case 38: // Up - Layer Down
+            case 87: // W
+            case 69: // E
+                engine?.LayerChange(engine?.currentLayer + 1);
+                break;
+            case 40: // Down - Layer Up
+            case 83: // S
+            case 81: // Q
+                engine?.LayerChange(engine?.currentLayer - 1);
+                break;
+            case 70: // F - Full Screen
+            case 13: // Enter
+            case 27: // Esc
+                showSidebar = !showSidebar;
+                break;
+            case 82: // R - Reload
+                loadProject();
+                break;
+            case 90: // Z - Show Settings
+                if(popup["devices"] || popup["demoplay"]) 
+                {
+                    popup["devices"] = false;
+                    popup["demoplay"] = false;
+                }
+                popup["setting"] = !popup["setting"];
+                break;
+            case 88: // X - Show Devices
+                if(popup["setting"] || popup["demoplay"]) 
+                {
+                    popup["setting"] = false;
+                    popup["demoplay"] = false;
+                }
+                popup["devices"] = !popup["devices"];
+                break;
+            case 67: // C - Show Demo Play Settings
+                if(popup["setting"] || popup["devices"]) 
+                {
+                    popup["setting"] = false;
+                    popup["devices"] = false;
+                }
+                popup["demoplay"] = !popup["demoplay"];
+                break;
+            default:
+                break;
+        }
+	}
+
     midiDevices[0] = new GridController(0, deviceKeyPressed, deviceKeyReleased);
 
     const loadProject = () => {
@@ -223,7 +298,7 @@
             engine.LoadProjectFile(file).then(
                 (result) => {
                     console.log("Project Loaded");
-                    project_status = "loaded";
+                    projectStatus = "loaded";
                 },
                 (error) => {
                     toast.push(
@@ -238,10 +313,10 @@
                             duration: 5000
                         }
                     );
-                    project_status = "not loaded";
+                    projectStatus = "not loaded";
                 }
             );
-            project_status = "loading";
+            projectStatus = "loading";
         };
         input.click();
     };
@@ -393,6 +468,7 @@
 </script>
 
 <main>
+    <GoogleAnalytics properties={[ 'G-QQCVL9EZHF' ]} />
     <div class="toast {mobileView ? 'mobile': ''}">
         <SvelteToast options={{pausable: true, intro: mobileView ? { y: -192 } : undefined}}/>
     </div>
@@ -420,7 +496,7 @@
                     on:demoplay={() => (popup["demoplay"] = true)}
                     on:loadProject={() => {loadProject();}}
                     bind:project={engine}
-                    bind:status={project_status}
+                    bind:status={projectStatus}
                     bind:show={showSidebar}
                     bind:mobile={mobileView}
             />
@@ -444,13 +520,14 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="amethyst-player-footer center-class">
-                    <span 
-                        title= {__BUILD_STRING__}
-                    >
+                <div class="amethyst-player-footer center-class" on:click={(e) => {e.stopPropagation()}}>
+                {#if projectStatus === "loaded"}
+                    <LayerSelector bind:project={engine}/>
+                {:else}
+                    <span title= {__BUILD_STRING__}>
                         {`Amethyst Player`}
                     </span>
+                {/if}
                 </div>
             </div>
         </div>
@@ -912,3 +989,5 @@
         }
     }
 </style>
+
+<svelte:window on:keydown|preventDefault={onKeyDown} />
