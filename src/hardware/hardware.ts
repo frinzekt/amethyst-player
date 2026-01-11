@@ -358,7 +358,6 @@ export class GridController {
                 ];
             }
             let deviceKeyID = this.activeConfig.keymap?.[keyID[1]]?.[keyID[0]];
-            // console.log(`${keyID[0]} ${keyID[1]} ${note}`)
             if(deviceKeyID) {
                 this.setColorOnDevice(deviceKeyID, color);    
             }

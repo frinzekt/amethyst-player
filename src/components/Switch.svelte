@@ -16,8 +16,8 @@
         height: 34px;
         width: 60px;
 
-        background-color: rgb(20, 20, 20);
-        border: 2px solid rgb(40, 40, 40);
+        background-color: var(--bg1);
+        border: 2px solid var(--bg4);
 
         border-radius: 34px;
 
@@ -33,7 +33,7 @@
         &.toggled {
             .switch-thumb {
                 width: 100%;
-                background-color: #67E953;
+                background-color: var(--enabled);
 
                 transition: width 0.2s, background-color 0.1s 0.1s;
             }
@@ -42,7 +42,7 @@
         .switch-thumb {
             height: 16px;
             width: 16px;
-            background-color: rgb(40, 40, 40);
+            background-color: var(--bg4);
             border-radius: 14px;
 
             transition: width 0.2s, background-color 0.1s 0.1s;

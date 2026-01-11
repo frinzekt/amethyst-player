@@ -21,7 +21,7 @@ class UnipackRT implements ProjectRT {
     //Runtime
     activeKeyLED = {}; //List of active keyLEDs so we can stop them
     currentLayer: number = 0;
-    currentKeyPress: KeyID[] = [];
+    keypressLastLayer: number[][] = []; //For storing the last layer a key was pressed on
     keypressHistory = undefined;
 
     constructor(api: Canvas) {
@@ -130,6 +130,7 @@ class UnipackRT implements ProjectRT {
                         this.projectInfo.layer = this.unipackInfo["chain"];
                         this.projectInfo.devices = {"main": [this.unipackInfo["buttonX"], this.unipackInfo["buttonY"]]};
 
+                        this.keypressLastLayer = new Array(this.unipackInfo["buttonX"]).fill(null).map(() => new Array(this.unipackInfo["buttonY"]).fill(0));
                         this.keypressHistory = new Array(this.unipackInfo["buttonX"]).fill(null).map(() => new Array(this.unipackInfo["buttonY"]).fill(0));
                     } else if (filetype == "keySound") {
                         // console.log("KeySound file: " + filename);
@@ -251,6 +252,7 @@ class UnipackRT implements ProjectRT {
 
     //Input
     KeyPress(device: DeviceInfoCanvas, keyID: KeyID): void {
+        console.log(`KeyPress: ${keyID}`);
         let layer = this.IndexOfKeyID(device.info.layer_key, keyID);
         if (layer != -1) {
             if(!this.api?.options.learningMode || this.demoplay.status == "PLAYING")
@@ -280,6 +282,7 @@ class UnipackRT implements ProjectRT {
             }
 
             this.activeKeys.push(keyID.toString());
+            this.keypressLastLayer[canvas_x][canvas_y] = this.currentLayer;
         }
 
         if(this.api?.options.learningMode && this.demoplay && this.demoplay.status != "PLAYING")
@@ -305,7 +308,16 @@ class UnipackRT implements ProjectRT {
     }
 
     KeyRelease(device: DeviceInfoCanvas, keyID: KeyID): void {
+        console.log(`KeyRelease: ${keyID}`);
+
+        if(this.keypressLastLayer?.[keyID[0]]?.[keyID[1]] != this.currentLayer)
+        {
+            console.log("Key released on different layer - ignoring");
+            return;
+        }
+
         let [canvas_x, canvas_y] = keyID;
+        let wormhole = false;
         
         let layer = this.IndexOfKeyID(device.info.layer_key, keyID);
         if (layer != -1) {
@@ -326,6 +338,7 @@ class UnipackRT implements ProjectRT {
                 if((!this.api?.options.learningMode || this.demoplay.status == "PLAYING") && this.keySound[this.currentLayer][canvas_x][canvas_y][soundIndex].wormhole != undefined)
                 {
                     this.LayerChange(this.keySound[this.currentLayer][canvas_x][canvas_y][soundIndex]?.wormhole);
+                    wormhole = true;
                 }
             }
         }
@@ -338,7 +351,12 @@ class UnipackRT implements ProjectRT {
         }
 
         //Update History
-        if(!this.api?.options.learningMode || this.demoplay.status == "PLAYING")
+        if (wormhole)
+        {
+            // Don't log wormhole key presses
+            // console.log("Wormhole - not logging history")
+        }
+        else if(!this.api?.options.learningMode || this.demoplay.status == "PLAYING")
         {
             this.logKeypressHistory(canvas_x, canvas_y);
         }
@@ -362,7 +380,7 @@ class UnipackRT implements ProjectRT {
     LayerChange(layer: number): void { 
         if(layer < this.unipackInfo["chain"] && layer >= 0)
         {
-            console.log(`Layer Change ${layer}`); 
+            console.log(`Layer Change ${this.currentLayer} -> ${layer}`); 
             if (layer !== this.currentLayer) this.clearKeypressHistory();
             this.currentLayer = layer;
         }
@@ -388,6 +406,7 @@ class UnipackRT implements ProjectRT {
     {
         if (this.keypressHistory?.[x]?.[y] != undefined)
         this.keypressHistory[x][y]++;
+        // console.log(`Keypress history[${x}][${y}] = ${this.keypressHistory[x][y]}`);
     }
 
     clearKeypressHistory() {

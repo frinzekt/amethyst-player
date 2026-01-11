@@ -5,7 +5,6 @@
     import Music from "carbon-icons-svelte/lib/Music.svelte"
     import MusicRemove from "carbon-icons-svelte/lib/MusicRemove.svelte"
     import InProgress from "carbon-icons-svelte/lib/InProgress.svelte"
-    import OverflowMenuVertical from "carbon-icons-svelte/lib/OverflowMenuVertical.svelte"
     import Pause from "carbon-icons-svelte/lib/Pause.svelte"
     import Play from "carbon-icons-svelte/lib/Play.svelte"
     import ChevronLeft from "carbon-icons-svelte/lib/ChevronLeft.svelte"
@@ -33,7 +32,7 @@
     export let mobile:boolean;
     let animation:boolean = false;
     let animationChangeCount: number = 0;
-    $:{mobile, (() => {animationChangeCount = -1; show = !mobile})()}
+    $:{mobile, (() => {animationChangeCount = -1; show = true})()}
     $:{show, (async() => {
         if(animationChangeCount == -1){animationChangeCount++; return;}
         animation = true; let localAnimationChangeCount = ++animationChangeCount; 
@@ -84,10 +83,16 @@
                         </div>
                     </div>
                 </div>
-                <div style="text-align: center; margin-top: 20px;">
-                    <div class={"load-project-button"} on:click={() => dispatch("loadProject")}>
-                        <span>{$t('sidebar.load_project')}</span>
+                <div style="text-align: center; margin-top: 20px; display: flex; gap: 10px; align-items: center;">
+                    <div class={"load-project-button sidebar-button"} style="flex: 1;" on:click={() => dispatch("loadProject")}>
+                        <span>{$t('sidebar.local_project')}</span>
                     </div>
+                    <div class={"load-project-button project-store-button sidebar-button"} style="flex: 1;" on:click={() => dispatch("openProjectStore")}>
+                        <span>{$t('sidebar.project_store')}</span>
+                    </div>
+                    <!-- <div class={"load-project-button sidebar-button"} style="flex: 1;" on:click={() => dispatch("openDownloadedProjects")}>
+                        <span>{$t('sidebar.downloaded_projects')}</span>
+                    </div> -->
                 </div>
             </div>
         {/if}
@@ -135,19 +140,26 @@
                     </div>
                 </div>
 
-                <div style="text-align: center; margin-top: 20px;">
-                    <div class={"load-project-button"} on:click={() => dispatch("loadProject")}>
-                        <span>{$t('sidebar.load_project')}</span>
+                <div style="text-align: center; margin-top: 20px; display: flex; gap: 10px; align-items: center;">
+                    <div class={"load-project-button"} style="flex: 1;" on:click={() => dispatch("loadProject")}>
+                        <span>{$t('sidebar.local_project')}</span>
                     </div>
+                    <div class={"load-project-button project-store-button"} style="flex: 1;" on:click={() => dispatch("openProjectStore")}>
+                        <span>{$t('sidebar.project_store')}</span>
+                    </div>
+                    <!-- <div class={"load-project-button"} style="flex: 1;" on:click={() => dispatch("openDownloadedProjects")}>
+                        <span>{$t('sidebar.downloaded_projects')}</span>
+                    </div> -->
                 </div>
             </div>
             
             {#if project?.demoplay !== undefined}
                 <div class="sidebar-block-demoplay">
-                    <div style="display: flex; color: gray; align-items: center; gap: 5px;" on:click={() => dispatch("demoplay")}>
-                        <span class="block-title">{$t('sidebar.project_demoplay')}</span>
-
-                        <OverflowMenuVertical style="margin-top: -10px;margin-left: -4px;" size={24}></OverflowMenuVertical>
+                    <div class="clickable-block-bar">
+                        <div style="display: flex; align-items: center; gap: 5px;" on:click={() => dispatch("demoplay")}>
+                            <span class="block-title">{$t('sidebar.project_demoplay')}</span>
+                            <Settings class="demoplay-settings-gear" style="margin-top: -8px; margin-left: 4px;" size={22}></Settings>
+                        </div>
                     </div>
 
                     <div class="demoplay-time">
@@ -191,20 +203,20 @@
     <div style="height: 100%"></div>
 
     <div class="sidebar-bottom-block">
-        <div class="icon-button">
+        <div class="icon-button" data-tutorial="settings">
             <div on:click={() => dispatch("settings")}>
                 <Settings size={32}></Settings>
             </div>
         </div>
 
-        <div class="icon-button">
+        <div class="icon-button" data-tutorial="devices">
             <div on:click={() => dispatch("devices")}>
                 <Usb size={36}></Usb>
             </div>
         </div>
 
         <div class="icon-button">
-            <div on:click={() => goto("https://discord.gg/Aw99cAgmDA")}>
+            <div on:click={() => window.open("https://discord.gg/Aw99cAgmDA", "_blank")}>
                 <LogoDiscord size={32}></LogoDiscord>
             </div>
         </div>
@@ -216,10 +228,10 @@
         min-width: 350px;
         max-width: 450px;
         width: 33vw;
-        background-color: rgb(20, 20, 20);
+        background-color: var(--bg1, rgb(20, 20, 20));
         box-shadow: 0 0 10px 0.5px black;
         overflow: hidden;
-        z-index: 1;
+        z-index: 5;
 
         display: flex;
         flex-direction: column;
@@ -268,7 +280,7 @@
                 font-size: 24px;
 
                 letter-spacing: 0.125rem;
-                color: #f5f5f5;
+                color: var(--text1);
             }
 
             span.subtitle {
@@ -282,7 +294,7 @@
                 font-size: 16px;
 
                 letter-spacing: 0.125rem;
-                color: rgba(245, 245, 245, 0.38);
+                color: var(--text2);
             }
         }
 
@@ -295,24 +307,15 @@
             display: flex;
             flex-direction: column;
 
-            a.community-button {
-                margin-top: 30px;
-                text-align: center;
-
-                font-family: 'Roboto', sans-serif;
-                font-style: normal;
-                font-weight: 400;
-                font-size: 18px;
-                color: #80D2E4;
-
-                transition: color 0.1s;
-
-                cursor: pointer;
-
-                &:hover {
-                    color: #5093a2;
-                }
+            .block-bar-clickable
+            {
+                background-color: var(--bg3, rgb(50, 50, 50));
+                transition: background-color 0.3s ease; /* Smooth transition */
             }
+            .block-bar-clickable:hover {
+                background-color: var(--bg1, rgb(10, 10, 10));
+            }
+
 
             .block-title {
                 font-family: 'Roboto', sans-serif;
@@ -320,7 +323,7 @@
                 font-weight: 300;
                 font-size: 20px;
 
-                color: rgba(245, 245, 245, 0.52);
+                color: var(--text2, rgba(245, 245, 245, 0.52));
                 margin-bottom: 10px;
             }
 
@@ -348,7 +351,7 @@
                             justify-content: center;
                             align-items: center;
 
-                            color: #fff;
+                            color: var(--text1, #fff);
 
                             img {
                                 height: 30px;
@@ -369,7 +372,7 @@
                             font-weight: 300;
                             font-size: 16px;
 
-                            color: #cbcbcb;
+                            color: var(--text1, #cbcbcb);
                         }
                     }
                 }
@@ -401,30 +404,32 @@
                 padding: 5px 15px;
                 border-radius: 8px;
 
-                background-color: rgb(20, 20, 20);
-                border: 2px solid rgb(40, 40, 40);
+                background-color: var(--bg1);
+                border: 2px solid var(--bg4);
+
+                transition: background-color 0.3s ease, border 0.3s ease, color 0.3s ease;
 
                 span {
-                    font-family: "Roboto Mono", monospace;
+                    font-family: "Roboto", sans-serif;
 
-                    color: #dedede;
+                    color: var(--text1);
                 }
 
                 &:hover {
-                        background-color: rgb(10, 10, 10);
-                        border: 2px solid rgb(31, 31, 31);
+                        background-color: var(--bg3);
+                        border: 2px solid var(--bg4);
 
-                        color: #c5c5c5;
+                        color: var(--text1);
                     }
 
                 &:active {
-                    background-color: rgb(0,0,0);
+                    background-color: var(--bg4);
                 }
             }
         }
 
         .sidebar-block-demoplay {
-            margin-top: 150px;
+            margin-top: min(50px, 30vh);
             height: 200px;
             padding: 20px;
 
@@ -433,13 +438,25 @@
             display: flex;
             flex-direction: column;
 
+            .clickable-block-bar
+            {
+                color: var(--text2);
+
+                transition: color 0.3s ease;
+
+                cursor: pointer;
+
+                &:hover {
+                    color: var(--text1);
+                }
+            }
+
             .block-title {
                 font-family: 'Roboto', sans-serif;
                 font-style: normal;
                 font-weight: 300;
                 font-size: 20px;
 
-                color: rgba(245, 245, 245, 0.52);
                 margin-bottom: 10px;
             }
 
@@ -464,7 +481,7 @@
                     -ms-user-select: none;
                     -moz-user-select: none;
 
-                    color: #696969;
+                    color: var(--text2);
                 }
             }
             .demoplay-control-block {
@@ -490,17 +507,19 @@
                         height: 50px;
                         width: 50px;
 
-                        background-color: rgb(20, 20, 20);
-                        border: 2px solid rgb(40, 40, 40);
+                        background-color: var(--bg1);
+                        border: 2px solid var(--bg4);
                         border-radius: 50%;
 
-                        color: #d5d5d5;
+                        color: var(--text1);
+
+                        transition: background-color 0.3s ease, border 0.3s ease, color 0.3s ease;
 
                         &:hover {
-                            background-color: rgb(10, 10, 10);
-                            border: 2px solid rgb(31, 31, 31);
+                            background-color: var(--bg3);
+                            border: 2px solid var(--bg4);
 
-                            color: #c5c5c5;
+                            color: var(--text1);
                         }
 
                         &:active {
@@ -527,7 +546,15 @@
                 justify-content: center;
                 align-items: center;
 
-                color: grey;
+                color: var(--text2);
+
+                transition: color 0.3s ease;
+
+                cursor: pointer;
+
+                &:hover {
+                    color: var(--text1);
+                }
             }
         }
     }

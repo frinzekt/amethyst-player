@@ -3,5 +3,9 @@
     "virtual_device": "Virtual Device",
     "virtual_device_Scale": "Virutal Device Scale",
     "project_engine": "Project Engine",
-    "language": "Language"
+    "language": "Language",
+    "theme": "Theme",
+    "theme_dark": "Dark",
+    "theme_light": "Light",
+    "theme_auto": "Auto (System)"
 }

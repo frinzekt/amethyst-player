@@ -27,7 +27,7 @@
 
 <div class="popup-element {show? 'active' : 'inactive'}">
     {#if show && !clearPopup}
-        <div class="popup-inner {mobile? 'mobile-popup': ''}" use:clickOutside>
+        <div class="popup-inner" use:clickOutside>
             <slot />
         </div>
     {:else if show && clearPopup}
@@ -53,7 +53,7 @@
             height: 100vh;
             width: 100vw;
 
-            background-color: rgba(0, 0, 0, 0.48);
+            background-color: var(--overlay);
             backdrop-filter: blur(8px);
         }
 
@@ -71,18 +71,10 @@
         .popup-inner {
             max-width: 90vw;
             padding: 20px;
-            background-color: rgb(20, 20, 20);
+            background-color: var(--bg1, rgb(20, 20, 20));
             border-radius: 10px;
-            border: 2px solid rgb(50, 50, 50);
-            box-shadow: 0 0 20px 10px black;
-
-            &.mobile-popup {
-                max-width: 100vw;
-                max-height: 100vh;
-                overflow-y: auto;
-                border-radius: initial;
-                border: initial;
-            }
+            border: 2px solid var(--bg4, rgb(50, 50, 50));
+            box-shadow: 0 0 20px 10px var(--shadow);
         }
     }
 </style>

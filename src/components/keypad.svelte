@@ -6,8 +6,8 @@
     export let deviceID: number;
     export let id: KeyID;
     let active:boolean = false;
-    export let keyPress: KeyPress;
-    export let keyRelease: KeyRelease;
+    export let keyPress: KeyPress = undefined;
+    export let keyRelease: KeyRelease = undefined;
     var button: HTMLButtonElement;
     export function set_color(color: Color)
     {
@@ -20,12 +20,16 @@
   on:mousedown={() => {
     // console.log(`${id} clicked`)
     active = true;
-    keyPress(deviceID, id);
+    if (keyPress) {
+        keyPress(deviceID, id);
+    }
   }}
   on:mouseup={() => {
     // console.log(`${id} released`)
     active = false;
-    keyRelease(deviceID, id);
+    if (keyRelease) {
+        keyRelease(deviceID, id);
+    }
   }}
   on:mouseleave={() => {
     if(active)

@@ -6,3 +6,5 @@ node_modules
 .nvmrc
 .env.*
 !.env.example
+package-lock.json
+.claude/settings.local.json

@@ -22,13 +22,13 @@
         padding: 5px 15px;
         border-radius: 8px;
 
-        background-color: rgb(20, 20, 20);
-        border: 2px solid rgb(40, 40, 40);
+        background-color: var(--bg1);
+        border: 2px solid var(--bg4);
 
         span {
-            font-family: "Roboto Mono", monospace;
+            font-family: "Roboto", sans-serif;
 
-            color: #dedede;
+            color: var(--text1);
         }
     }
 </style>

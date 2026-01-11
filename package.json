@@ -26,10 +26,10 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@supabase/supabase-js": "^2.52.1",
 		"carbon-icons-svelte": "^11.4.0",
 		"howler": "^2.2.3",
 		"jszip": "^3.10.1",
-		"node-sass": "^8.0.0",
 		"scss": "^0.2.4",
 		"svelte-resize-observer": "^2.0.0",
 		"sveltekit-i18n": "^2.2.2",

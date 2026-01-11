@@ -1,8 +1,8 @@
 import type { GridDeviceConfig } from "../types/devices";
 
 const config: GridDeviceConfig = {
-    name: "Matrix",
-    midiNameRegex: "^Matrix",
+    name: "Mystrix",
+    midiNameRegex: "^Matrix|Mystrix",
 
     paletteChannel: {
       "classic": 2

@@ -39,6 +39,11 @@ export const config = {
             key: 'color',
             loader: async () => (await import('./en/color.json')).default,
         },
+        {
+            locale: 'en',
+            key: 'tutorial',
+            loader: async () => (await import('./en/tutorial.json')).default,
+        },
         //ZH-CN
         {
             locale: 'zh-CN',
@@ -69,6 +74,11 @@ export const config = {
             locale: 'zh-CN',
             key: 'color',
             loader: async () => (await import('./zh-cn/color.json')).default,
+        },
+        {
+            locale: 'zh-CN',
+            key: 'tutorial',
+            loader: async () => (await import('./zh-cn/tutorial.json')).default,
         },
     ],
 };

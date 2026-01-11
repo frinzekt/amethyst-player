@@ -68,7 +68,7 @@ export function setColor(keyID: KeyID, color: Color) {
         }
         let index = getKeypadIndex(keyID)
         if(keyPads[index]) {
-            var screen_color = color.overlay(new Color(ColorType.RGB, [80, 80, 80]));
+            var screen_color = color.overlay(new Color(ColorType.RGB, [0x80, 0x80, 0x80]));
             keyPads[index].set_color(screen_color);  
             if(Array.isArray(keyID) && keyID[1] == 9 && keyID[0] > 0 && keyID[0] < 9) //So both button light up
             {
@@ -123,9 +123,10 @@ export function setColor(keyID: KeyID, color: Color) {
 
 <style lang="scss">
     .lp-border {
-        background: rgb(20, 20, 20);
-        border: 2px solid rgb(120, 120, 120);
+        background: var(--device-body);
+        border: 2px solid var(--device-border);
         border-radius: 2%;
+        box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
 
         position: relative;
 
@@ -161,7 +162,7 @@ export function setColor(keyID: KeyID, color: Color) {
                 height: 90%;
                 width: 90%;
                 border-radius: 5%;
-                background-color: rgb(80, 80, 80);
+                background-color: var(--device-button);
 
                 &::after {
                     content: "";
@@ -173,7 +174,7 @@ export function setColor(keyID: KeyID, color: Color) {
                     
                     padding: 6%;
                     background-clip: content-box;
-                    background-color: rgb(10, 10, 10);
+                    background-color: var(--device-button-overlay);
                     border-radius: 5%;
                 }
             }
@@ -193,7 +194,7 @@ export function setColor(keyID: KeyID, color: Color) {
                     height: 100%;
                     width: 92%;
                     border-radius: 5%;
-                    background-color: rgb(80, 80, 80);
+                    background-color: var(--device-button);
 
                     &::after {
                         content: "";
@@ -205,7 +206,7 @@ export function setColor(keyID: KeyID, color: Color) {
                         
                         padding: 6%;
                         background-clip: content-box;
-                        background-color: rgb(10, 10, 10);
+                        background-color: var(--device-button-overlay);
                         border-radius: 5%;
                     }
                 }
@@ -215,14 +216,14 @@ export function setColor(keyID: KeyID, color: Color) {
                 height: 92%;
                 width: 92%;
                 border-radius: 5%;
-                background-color: rgb(80, 80, 80);
+                background-color: var(--device-button);
             }
 
             :global(.lp-logo) {
                 height: 90%;
                 width: 90%;
                 border-radius: 8%;
-                background-color: rgb(5, 5, 5);
+                background-color: var(--device-border);
 
                 display: flex;
                 justify-content: center;
@@ -232,7 +233,7 @@ export function setColor(keyID: KeyID, color: Color) {
                     width: 85%;
                     height: 85%;
 
-                    background-color: rgb(80, 80, 80);
+                    background-color: var(--device-button);
                     border-radius: 5%;
                     overflow: hidden;
 
@@ -250,7 +251,7 @@ export function setColor(keyID: KeyID, color: Color) {
                             align-items: center;
 
                             :global(.top-part) {
-                                background-color: black;
+                                background-color: var(--device-body);
                                 margin-top: 10%;
 
                                 height: 60%;
@@ -258,7 +259,7 @@ export function setColor(keyID: KeyID, color: Color) {
                             }
 
                             :global(.bottom-part) {
-                                background-color: black;
+                                background-color: var(--device-body);
                                 margin-bottom: 10%;
 
                                 height: 60%;
@@ -275,7 +276,7 @@ export function setColor(keyID: KeyID, color: Color) {
                 height: 60%;
                 width: 60%;
                 border-radius: 15%;
-                background-color: rgb(80, 80, 80);
+                background-color: var(--device-button);
 
                 &::after {
                     content: "";
@@ -287,7 +288,7 @@ export function setColor(keyID: KeyID, color: Color) {
                     
                     padding: 8%;
                     background-clip: content-box;
-                    background-color: rgb(10, 10, 10);
+                    background-color: var(--device-button-overlay);
                     border-radius: 5%;
                 }
             }
